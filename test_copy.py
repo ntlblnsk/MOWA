@@ -2,7 +2,7 @@ import argparse
 import torch
 from torch.utils.data import DataLoader
 from model.builder import *
-from dataset_loaders import TestDatasetMask
+from dataset_loaders_copy import InferenceDataset
 import os
 import glob
 import numpy as np
@@ -37,7 +37,7 @@ def test(args):
         if not os.path.exists(path):
             os.makedirs(path)
 
-    test_loader_list = [DataLoader(dataset=TestDatasetMask(test_path, i), batch_size=1, num_workers=4, shuffle=False, drop_last=False) \
+    test_loader_list = [DataLoader(dataset=InferenceDataset(test_path, i), batch_size=1, num_workers=4, shuffle=False, drop_last=False) \
                             for i, test_path in enumerate(args.test_path)]
     
     '''define the network'''
@@ -76,8 +76,8 @@ def test(args):
         print("Task ID:", index)
         NUM = count_files(args.test_path[index])
         acc_temp = 0
-        psnr_img = 0
-        ssim_img = 0
+        # psnr_img = 0
+        # ssim_img = 0
         path_img = str(IMG_DIR_LIST[index]) + '/'
         path_grid = str(MESH_DIR_LIST[index]) + '/'
         path_res = str(RES_DIR_LIST[index]) + '/'
@@ -89,8 +89,8 @@ def test(args):
 
                 input1_tensor = outputs['input1_tensor'].float()
                 input2_tensor = outputs['input2_tensor'].float()
-                gt1_tensor = outputs['gt1_tensor'].float()
-                gt2_tensor = outputs['gt2_tensor'].float()
+                # gt1_tensor = outputs['gt1_tensor'].float()
+                # gt2_tensor = outputs['gt2_tensor'].float()
                 mask_tensor = outputs['mask_tensor'].float()
                 task_id_tensor = outputs['task_id_tensor'].float()
                 file_name = outputs['file_name'][0]
@@ -98,8 +98,8 @@ def test(args):
                 if torch.cuda.is_available():
                     input1_tensor = input1_tensor.cuda()
                     input2_tensor = input2_tensor.cuda()
-                    gt1_tensor = gt1_tensor.cuda()
-                    gt2_tensor = gt2_tensor.cuda()
+                    # gt1_tensor = gt1_tensor.cuda()
+                    # gt2_tensor = gt2_tensor.cuda()
                     mask_tensor = mask_tensor.cuda()
                     task_id_tensor = task_id_tensor.cuda()
 
@@ -109,11 +109,11 @@ def test(args):
                                                 [batch_out[key] for key in ['warp_tps', 'warp_flow', 'mesh', 'flow1', 'flow2', 'flow3', 'point_cls']]
 
                 ''' tensor to numpy and post-processing '''
-                _, c, ori_h, ori_w = input1_tensor.shape
+                # _, c, ori_h, ori_w = input1_tensor.shape
                 input_np2 = ((input2_tensor[0])*255.0).cpu().detach().numpy().transpose(1,2,0).astype(np.uint8)
-                gt_np1 = ((gt1_tensor[0])*255.0).cpu().detach().numpy().transpose(1,2,0).astype(np.uint8)
-                gt_np2 = ((gt2_tensor[0])*255.0).cpu().detach().numpy().transpose(1,2,0).astype(np.uint8)
-                gt_np2 = cv2.resize(gt_np2, (ori_w, ori_h))
+                # gt_np1 = ((gt1_tensor[0])*255.0).cpu().detach().numpy().transpose(1,2,0).astype(np.uint8)
+                # gt_np2 = ((gt2_tensor[0])*255.0).cpu().detach().numpy().transpose(1,2,0).astype(np.uint8)
+                # gt_np2 = cv2.resize(gt_np2, (ori_w, ori_h))
                 
                 warp_flow_np = ((warp_flow[0])*255.0).cpu().detach().numpy().transpose(1,2,0).astype(np.uint8)
                 flow1 = (flow1[0]).cpu().detach().numpy().transpose(1,2,0)
@@ -132,16 +132,17 @@ def test(args):
                 input_with_mesh = draw_mesh_on_warp(input_np2, mesh_np, args.tps_points[-1]-1, args.tps_points[-1]-1)
                 cv2.imwrite(path_grid + file_name + "_mesh" + ".jpg", input_with_mesh)
                 
-                ''' calculate metrics '''
-                psnr_img += psnr(warp_flow_np, gt_np1, data_range=255)
-                ssim_img += ssim(warp_flow_np, gt_np1, data_range=255, channel_axis=2)    
+                # ''' calculate metrics '''
+                # psnr_img += psnr(warp_flow_np, gt_np1, data_range=255)
+                # ssim_img += ssim(warp_flow_np, gt_np1, data_range=255, channel_axis=2)    
                 cv2.imwrite(path_img + file_name + "_flow1.jpg", flow1)
                 cv2.imwrite(path_img + file_name + "_flow2.jpg", flow2)
                 cv2.imwrite(path_img + file_name + "_flow3.jpg", flow3)
                 cv2.imwrite(path_res + file_name + ".jpg", warp_flow_np)
                 cv2.imwrite(path_img + file_name + "_flow.jpg", warp_flow_np)
         
-        print(f"Validation PSNR: {round(psnr_img / NUM, 4)}, Validation SSIM: {round(ssim_img / NUM, 4)}, Validation Acc: {round(acc_temp / NUM, 4)}")
+        # print(f"Validation PSNR: {round(psnr_img / NUM, 4)}, Validation SSIM: {round(ssim_img / NUM, 4)}, Validation Acc: {round(acc_temp / NUM, 4)}")
+        print(f"Validation Acc: {round(acc_temp / NUM, 4)}")
 
 
 

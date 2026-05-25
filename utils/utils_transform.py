@@ -25,7 +25,7 @@ def get_norm_mesh(mesh, height, width):
     return norm_mesh.reshape([batch_size, -1, 2]) 
 
 def transform_tps_fea(offset, input_tensor, grid_w, grid_h, dim, h, w):
-    input_tensor = input_tensor.permute(0,2,1).view(-1, dim, h, w)
+    input_tensor = input_tensor.permute(0, 2, 1).contiguous().view(-1, dim, h, w)
     batch_size, _, img_h, img_w = input_tensor.size()
     
     mesh_motion = offset.reshape(-1, grid_h+1, grid_w+1, 2)

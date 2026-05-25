@@ -1,0 +1,10 @@
+__pycache__/
+*.img
+*.png
+*.mat
+*.npy
+*.jpg
+*:Zone.Identifier
+# .gitignore
+.venv
+*.pth
