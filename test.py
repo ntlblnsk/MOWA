@@ -37,8 +37,8 @@ def test(args):
         if not os.path.exists(path):
             os.makedirs(path)
 
-    test_loader_list = [DataLoader(dataset=TestDatasetMask(test_path, i), batch_size=1, num_workers=4, shuffle=False, drop_last=False) \
-                            for i, test_path in enumerate(args.test_path)]
+    test_loader_list = [DataLoader(dataset=TestDatasetMask(test_path, args.task_id), batch_size=1, num_workers=4, shuffle=False, drop_last=False) \
+                            for test_path in args.test_path]
     
     '''define the network'''
     net = MOWA(img_size=args.input_size, tps_points=args.tps_points, embed_dim=args.embed_dim, win_size=args.win_size, 
@@ -171,8 +171,11 @@ if __name__=="__main__":
     '''Dataset settings'''                                                     
     parser.add_argument('--test_path', nargs='+', type=str, default=['/stitch/test/', '/wide-angle/test/', '/RS_Rec/test/', '/Rotation/test/', '/fisheye/test/', '/portrait/test/'])
     
+    parser.add_argument('--task_id', type=int, default=4)
+
     print('<==================== Testing ===================>\n')
 
     args = parser.parse_args()
+    print(args)
     print(args)
     test(args)
