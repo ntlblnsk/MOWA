@@ -1,17 +1,21 @@
-test-wide_n_makro:
-	python test.py \
+test-pict-dist:
+	python test_origin.py \
 		--gpu 0 \
 		--batch_size 1 \
-		--model_path '/home/ubuntu/MOWA/checkpoint' \
-		--method 'mowa-wide_n_makro' \
-		--test_path "/home/ubuntu/pictures/pictures-dist/wide_n_makro/" \
-		--task_id 1
+		--model_path '/mnt/mowa/MOWA/checkpoint' \
+		--method 'mowa-test-pict-dist' \
+		--test_path "/mnt/mowa/pictures/pictures-dist/ultrawide/preprocessing/cut2center-256/" \
+		"/mnt/mowa/pictures/pictures-dist/ultrawide/preprocessing/cut2left-256/" \
+		"/mnt/mowa/pictures/pictures-dist/ultrawide/preprocessing/cut2right-256/" \
+		"/mnt/mowa/pictures/pictures-dist/ultrawide/preprocessing/resize-origin_aspekt/" \
+		"/mnt/mowa/pictures/pictures-dist/ultrawide/preprocessing/padding-256" \
+		"/mnt/mowa/pictures/pictures-dist/wide_n_makro/resized512"
 
-test-ultrawide-cut2left-256:
-	python test.py \
+test-pict-rot:
+	python test_origin.py \
 		--gpu 0 \
 		--batch_size 1 \
-		--model_path '/home/ubuntu/MOWA/checkpoint' \
-		--method 'mowa-ultrawide-cut2left-256' \
-		--test_path "/home/ubuntu/pictures/pictures-dist/ultrawide/preprocessing/cut2left-256/" \
-		--task_id 1
+		--model_path '/mnt/mowa/MOWA/checkpoint' \
+		--method 'test-pict-rot' \
+		--test_path "/mnt/mowa/pictures/pictures-rot/squared/" \
+		"/mnt/mowa/pictures/pictures-rot/rectang"
