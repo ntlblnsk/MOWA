@@ -1,0 +1,24 @@
+    1  lsblk
+    2  cd /mnt
+    3  sudo mkdir data
+    4  sudo chown -R ubuntu:ubuntu data
+    5  sudo mount /dev/nvme2n1 data
+    6  cd data
+   10  ll
+   11  curl -LsSf https://astral.sh/uv/install.sh | sh
+   12  uv
+   13  cd MOWA/
+
+Stworzenie środowiska
+
+export UV_CACHE_DIR=.uv-cache
+uv venv --python 3.8
+
+export UV_LINK_MODE=copy
+uv pip install -r requirements.txt
+
+
+   24  df -h
+   25  which python
+   26  . .venv/bin/activate
+   27  which python
